@@ -1,4 +1,4 @@
-package com.musinsa.product.domain;
+package com.musinsa.product.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

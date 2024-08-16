@@ -1,5 +1,6 @@
-package com.musinsa.product.domain;
+package com.musinsa.product.domain.repository;
 
+import com.musinsa.product.domain.entity.Category;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
