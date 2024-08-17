@@ -20,11 +20,20 @@ public class Brand {
     @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 
+    @Comment("브랜드 설명")
+    @Column(name = "desc", length = 500, nullable = false, columnDefinition = "varchar(500) default ''")
+    private String desc;
+
     protected Brand() {
     }
 
     public Brand(String name) {
         this.name = name;
+    }
+
+    public Brand(String name, String desc) {
+        this.name = name;
+        this.desc = desc;
     }
 
     public int getId() {

@@ -32,4 +32,9 @@ public class GlobalExceptionHandler {
             .map(FieldError::getDefaultMessage).toList()));
     }
 
+    @ExceptionHandler(DuplicateBrandException.class)
+    public ResponseEntity<ErrorBody> handleDuplicateBrandException(DuplicateBrandException e) {
+        return ResponseEntity.badRequest().body(new ErrorBody(e.getMessage()));
+    }
+
 }
