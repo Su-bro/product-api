@@ -24,6 +24,9 @@ public class Product {
     @Column(name = "price", nullable = false)
     private int price;
 
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
+    private boolean isDeleted;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
@@ -54,6 +57,10 @@ public class Product {
         return this.price;
     }
 
+    public boolean isDeleted() {
+        return this.isDeleted;
+    }
+
     public Brand getBrand() {
         return this.brand;
     }
@@ -65,6 +72,10 @@ public class Product {
     public void update(String name, int price) {
         this.name = name;
         this.price = price;
+    }
+
+    public void delete() {
+        this.isDeleted = true;
     }
 
     public String toString() {

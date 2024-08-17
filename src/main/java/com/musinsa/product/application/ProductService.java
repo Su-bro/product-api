@@ -11,6 +11,7 @@ import com.musinsa.product.dto.PriceRangeResponse;
 import com.musinsa.product.dto.ProductByBrandResponse;
 import com.musinsa.product.dto.ProductByBrandResponse.ProductResponse;
 import com.musinsa.product.dto.ProductByCategoryResponse;
+import com.musinsa.product.dto.ProductDto.DeleteResponse;
 import com.musinsa.product.dto.ProductDto.RegisterResponse;
 import com.musinsa.product.dto.ProductDto.UpdateResponse;
 import jakarta.transaction.Transactional;
@@ -39,7 +40,7 @@ public class ProductService {
     public ProductByCategoryResponse getLowestPriceProductByCategory() {
         List<ProductByCategoryResponse.ProductResponse> productResponses =
             categoryRepository.findAllByOrderByIdAsc().stream()
-            .map(productRepository::findTopByCategoryOrderByPriceAsc)
+            .map(productRepository::findTopByCategoryAndIsDeletedFalseOrderByPriceAsc)
             .flatMap(Optional::stream)
             .map(product -> new ProductByCategoryResponse.ProductResponse(
                 product.getCategory().getName(),
@@ -59,7 +60,8 @@ public class ProductService {
      * @return 최저가격 브랜드와 카테고리별 상품 목록 및 총액
      */
     public ProductByBrandResponse getLowestPriceProductByBrand() {
-        LowestPriceBrandProjection lowestPriceBrandProjection = brandRepository.findLowestPriceBrandWithAllCategories();
+        LowestPriceBrandProjection lowestPriceBrandProjection = brandRepository.findLowestPriceBrandWithAllCategories()
+            .orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E002")));
         List<ProductResponse> products = productRepository.findLowestPriceProductsByBrandGroupByCategory(lowestPriceBrandProjection.getBrandId());
         return new ProductByBrandResponse(
             lowestPriceBrandProjection.getBrandName(),
@@ -75,9 +77,9 @@ public class ProductService {
      */
     public PriceRangeResponse getPriceRangeByCategory(String categoryName) {
         var category = categoryRepository.findByName(categoryName).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E003")));
-        var minPriceProduct = productRepository.findTopByCategoryOrderByPriceAsc(category)
+        var minPriceProduct = productRepository.findTopByCategoryAndIsDeletedFalseOrderByPriceAsc(category)
             .orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E004")));
-        var maxPriceProduct = productRepository.findTopByCategoryOrderByPriceDesc(category)
+        var maxPriceProduct = productRepository.findTopByCategoryAndIsDeletedFalseOrderByPriceDesc(category)
             .orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E004")));
         return new PriceRangeResponse(
             category.getName(),
@@ -102,7 +104,6 @@ public class ProductService {
         return new RegisterResponse(MessageUtil.getMsg("M001"));
     }
 
-
     /**
      * 상품을 수정합니다.
      *
@@ -113,8 +114,21 @@ public class ProductService {
      */
     @Transactional
     public UpdateResponse updateProduct(Long productId, String productName, int price) {
-        var product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E004")));
+        var product = productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E004")));
         product.update(productName, price);
         return new UpdateResponse(MessageUtil.getMsg("M002"));
     }
+
+    /**
+     * 상품을 삭제합니다. (soft deletion)
+     *
+     * @param productId 상품 ID
+     * @return 상품 삭제 결과 메시지
+     */
+    @Transactional
+    public DeleteResponse deleteProduct(Long productId) {
+        productRepository.findByIdAndIsDeletedFalse(productId).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E004"))).delete();
+        return new DeleteResponse(MessageUtil.getMsg("M003"));
+    }
+
 }

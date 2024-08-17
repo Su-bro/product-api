@@ -9,8 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,6 +63,13 @@ public class ProductController {
         @Parameter(description = "상품 ID", example = "1") @PathVariable("productId") Long productId,
         @RequestBody @Valid ProductDto.UpdateRequest request) {
         return ResponseEntity.ok(productService.updateProduct(productId, request.getProductName(), request.getPrice()));
+    }
+
+    @Operation(summary = "상품 삭제", description = "상품을 삭제합니다.")
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<ProductDto.DeleteResponse> deleteProduct(
+        @Parameter(description = "상품 ID", example = "1") @PathVariable("productId") Long productId) {
+        return ResponseEntity.ok(productService.deleteProduct(productId));
     }
 
 }

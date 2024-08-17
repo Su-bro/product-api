@@ -18,6 +18,7 @@ import com.musinsa.product.dto.ProductByCategoryResponse;
 import com.musinsa.product.dto.ProductDto;
 import java.util.List;
 import java.util.Optional;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,8 +69,8 @@ class ProductServiceTest {
     void getLowestPriceProductByCategoryTest() {
         // Arrange
         given(categoryRepository.findAllByOrderByIdAsc()).willReturn(List.of(category1, category2));
-        given(productRepository.findTopByCategoryOrderByPriceAsc(category1)).willReturn(Optional.of(product1));
-        given(productRepository.findTopByCategoryOrderByPriceAsc(category2)).willReturn(Optional.of(product2));
+        given(productRepository.findTopByCategoryAndIsDeletedFalseOrderByPriceAsc(category1)).willReturn(Optional.of(product1));
+        given(productRepository.findTopByCategoryAndIsDeletedFalseOrderByPriceAsc(category2)).willReturn(Optional.of(product2));
 
         // Act
         ProductByCategoryResponse result = productService.getLowestPriceProductByCategory();
@@ -83,7 +84,7 @@ class ProductServiceTest {
     void getLowestPriceProductByBrandTest() {
         // Arrange
         given(brandRepository.findLowestPriceBrandWithAllCategories()).willReturn(
-            new LowestPriceBrandProjectionImpl(brand1.getId(), brand1.getName(), 30000));
+            Optional.of(new LowestPriceBrandProjectionImpl(brand1.getId(), brand1.getName(), 30000)));
         given(productRepository.findLowestPriceProductsByBrandGroupByCategory(brand1.getId())).willReturn(
             List.of(new ProductResponse(category1.getName(), product1.getPrice()),
                 new ProductResponse(category2.getName(), product2.getPrice())));
@@ -130,8 +131,8 @@ class ProductServiceTest {
     void getPriceRangeByCategoryTest() {
         // Arrange
         given(categoryRepository.findByName(CATEGORY_NAME_1)).willReturn(Optional.of(category1));
-        given(productRepository.findTopByCategoryOrderByPriceAsc(category1)).willReturn(Optional.of(product1));
-        given(productRepository.findTopByCategoryOrderByPriceDesc(category1)).willReturn(Optional.of(product2));
+        given(productRepository.findTopByCategoryAndIsDeletedFalseOrderByPriceAsc(category1)).willReturn(Optional.of(product1));
+        given(productRepository.findTopByCategoryAndIsDeletedFalseOrderByPriceDesc(category1)).willReturn(Optional.of(product2));
 
         // Act
         PriceRangeResponse result = productService.getPriceRangeByCategory(CATEGORY_NAME_1);
@@ -161,13 +162,31 @@ class ProductServiceTest {
     @Test
     void updateProductTest() {
         // Arrange
-        given(productRepository.findById(1L)).willReturn(Optional.of(product1));
+        given(productRepository.findByIdAndIsDeletedFalse(1L)).willReturn(Optional.of(product1));
         // Act
         ProductDto.UpdateResponse result = productService.updateProduct(1L, PRODUCT_NAME_2, 11000);
 
         // Assert
         assertThat(result).isNotNull();
         assertThat(result.getMessage()).isEqualTo(MessageUtil.getMsg("M002"));
+        assertThat(product1.getName()).isEqualTo(PRODUCT_NAME_2);
+        assertThat(product1.getPrice()).isEqualTo(11000);
+    }
+
+    @Test
+    void deleteProductTest() {
+        // Arrange
+        given(productRepository.findByIdAndIsDeletedFalse(1L)).willReturn(Optional.of(product1));
+        // Act
+        var result = productService.deleteProduct(1L);
+
+        // Assert
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(result).isNotNull();
+            softly.assertThat(result.getMessage()).isEqualTo(MessageUtil.getMsg("M003"));
+            softly.assertThat(product1.isDeleted()).isTrue();
+        });
+
     }
 
 }

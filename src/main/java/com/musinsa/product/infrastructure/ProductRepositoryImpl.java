@@ -26,7 +26,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 product.category.name.as("categoryName"),
                 product.price.min().as("price")))
             .from(product)
-            .where(product.brand.id.eq(brandId))
+            .where(product.brand.id.eq(brandId), product.isDeleted.eq(false))
             .groupBy(product.category)
             .fetch();
     }

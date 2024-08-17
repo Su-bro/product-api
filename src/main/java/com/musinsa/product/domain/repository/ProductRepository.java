@@ -6,7 +6,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
-    Optional<Product> findTopByCategoryOrderByPriceAsc(Category category);
+    Optional<Product> findTopByCategoryAndIsDeletedFalseOrderByPriceAsc(Category category);
 
-    Optional<Product> findTopByCategoryOrderByPriceDesc(Category category);
+    Optional<Product> findTopByCategoryAndIsDeletedFalseOrderByPriceDesc(Category category);
+
+    Optional<Product> findByIdAndIsDeletedFalse(Long productId);
 }

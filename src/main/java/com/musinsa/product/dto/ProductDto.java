@@ -12,6 +12,7 @@ public class ProductDto {
 
     @Schema(description = "상품 등록 요청")
     public static class RegisterRequest {
+
         @NotBlank(message = "상품명을 입력해 주세요.")
         @Schema(description = "상품 이름", example = "반팔티셔츠")
         private String productName;
@@ -49,6 +50,7 @@ public class ProductDto {
 
     @Schema(description = "상품 등록 응답")
     public static class RegisterResponse {
+
         @Schema(description = "상품 등록 결과", example = "상품 등록이 완료되었습니다.")
         private String message;
 
@@ -91,6 +93,7 @@ public class ProductDto {
 
     @Schema(description = "상품 수정 응답")
     public static class UpdateResponse {
+
         @Schema(description = "상품 수정 결과", example = "상품 수정이 완료되었습니다.")
         private String message;
 
@@ -105,5 +108,24 @@ public class ProductDto {
             return message;
         }
 
+    }
+
+    @Schema(description = "상품 삭제 응답")
+    public static class DeleteResponse {
+
+        @Schema(description = "상품 삭제 결과", example = "상품 삭제가 완료되었습니다.")
+        private String message;
+
+        public DeleteResponse() {
+        }
+
+        public DeleteResponse(String result) {
+            this.message = result;
+        }
+
+        public String getMessage() {
+            return message;
+
+        }
     }
 }
