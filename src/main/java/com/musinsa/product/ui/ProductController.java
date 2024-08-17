@@ -9,9 +9,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/products")
-@Tag(name = "상품", description = "상품 API")
+@Tag(name = "Product", description = "상품 API")
 public class ProductController {
 
     private final ProductService productService;
@@ -50,7 +53,16 @@ public class ProductController {
     @Operation(summary = "상품 등록", description = "상품을 등록합니다.")
     @PostMapping
     public ResponseEntity<ProductDto.RegisterResponse> registerProduct(@RequestBody @Valid ProductDto.RegisterRequest request) {
-        return ResponseEntity.ok(productService.registerProduct(request.getProductName(), request.getPrice(), request.getBrandName(), request.getCategoryName()));
+        return ResponseEntity.ok(
+            productService.registerProduct(request.getProductName(), request.getPrice(), request.getBrandName(), request.getCategoryName()));
+    }
+
+    @Operation(summary = "상품 수정", description = "상품의 상품명, 가격을 수정합니다.")
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDto.UpdateResponse> updateProduct(
+        @Parameter(description = "상품 ID", example = "1") @PathVariable("productId") Long productId,
+        @RequestBody @Valid ProductDto.UpdateRequest request) {
+        return ResponseEntity.ok(productService.updateProduct(productId, request.getProductName(), request.getPrice()));
     }
 
 }

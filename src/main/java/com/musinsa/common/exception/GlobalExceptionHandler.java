@@ -1,6 +1,7 @@
 package com.musinsa.common.exception;
 
 import com.musinsa.common.response.ErrorBody;
+import com.musinsa.common.util.MessageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorBody> handleException(Exception e) {
         LOGGER.error("Unexpected error occurred", e);
-        return ResponseEntity.badRequest().body(new ErrorBody(e.getMessage()));
+        return ResponseEntity.internalServerError().body(new ErrorBody(MessageUtil.getMsg("E001")));
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

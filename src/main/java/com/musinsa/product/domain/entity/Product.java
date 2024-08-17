@@ -62,6 +62,11 @@ public class Product {
         return this.category;
     }
 
+    public void update(String name, int price) {
+        this.name = name;
+        this.price = price;
+    }
+
     public String toString() {
         return "Product(id=" + this.getId() + ", name=" + this.getName() + ", price=" + this.getPrice() + ", brand=" + this.getBrand() + ", category=" + this.getCategory() + ")";
     }

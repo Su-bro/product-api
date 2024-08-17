@@ -158,4 +158,16 @@ class ProductServiceTest {
         assertThat(result.getMessage()).isEqualTo(MessageUtil.getMsg("M001"));
     }
 
+    @Test
+    void updateProductTest() {
+        // Arrange
+        given(productRepository.findById(1L)).willReturn(Optional.of(product1));
+        // Act
+        ProductDto.UpdateResponse result = productService.updateProduct(1L, PRODUCT_NAME_2, 11000);
+
+        // Assert
+        assertThat(result).isNotNull();
+        assertThat(result.getMessage()).isEqualTo(MessageUtil.getMsg("M002"));
+    }
+
 }

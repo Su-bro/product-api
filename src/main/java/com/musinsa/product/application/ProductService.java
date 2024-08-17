@@ -12,6 +12,8 @@ import com.musinsa.product.dto.ProductByBrandResponse;
 import com.musinsa.product.dto.ProductByBrandResponse.ProductResponse;
 import com.musinsa.product.dto.ProductByCategoryResponse;
 import com.musinsa.product.dto.ProductDto.RegisterResponse;
+import com.musinsa.product.dto.ProductDto.UpdateResponse;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -72,9 +74,11 @@ public class ProductService {
      * @return 최저, 최고 가격 브랜드와 상품 가격
      */
     public PriceRangeResponse getPriceRangeByCategory(String categoryName) {
-        var category = categoryRepository.findByName(categoryName).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E001")));
-        var minPriceProduct = productRepository.findTopByCategoryOrderByPriceAsc(category).orElseThrow();
-        var maxPriceProduct = productRepository.findTopByCategoryOrderByPriceDesc(category).orElseThrow();
+        var category = categoryRepository.findByName(categoryName).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E003")));
+        var minPriceProduct = productRepository.findTopByCategoryOrderByPriceAsc(category)
+            .orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E004")));
+        var maxPriceProduct = productRepository.findTopByCategoryOrderByPriceDesc(category)
+            .orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E004")));
         return new PriceRangeResponse(
             category.getName(),
             new PriceRangeResponse.ProductResponse(minPriceProduct.getBrand().getName(), minPriceProduct.getPrice()),
@@ -84,6 +88,7 @@ public class ProductService {
 
     /**
      * 상품을 등록합니다.
+     *
      * @param productName 상품명
      * @param price 가격
      * @param brandName 브랜드명
@@ -91,11 +96,25 @@ public class ProductService {
      * @return 상품 등록 결과 메시지
      */
     public RegisterResponse registerProduct(String productName, int price, String brandName, String categoryName) {
-        var category = categoryRepository.findByName(categoryName).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E001")));
+        var category = categoryRepository.findByName(categoryName).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E003")));
         var brand = brandRepository.findByName(brandName).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E002")));
         productRepository.save(new Product(productName, price, brand, category));
         return new RegisterResponse(MessageUtil.getMsg("M001"));
     }
 
 
+    /**
+     * 상품을 수정합니다.
+     *
+     * @param productId 상품 ID
+     * @param productName 상품명
+     * @param price 가격
+     * @return 상품 수정 결과 메시지
+     */
+    @Transactional
+    public UpdateResponse updateProduct(Long productId, String productName, int price) {
+        var product = productRepository.findById(productId).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E004")));
+        product.update(productName, price);
+        return new UpdateResponse(MessageUtil.getMsg("M002"));
+    }
 }

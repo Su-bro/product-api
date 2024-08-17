@@ -49,7 +49,7 @@ public class ProductDto {
 
     @Schema(description = "상품 등록 응답")
     public static class RegisterResponse {
-        @Schema(description = "상품 등록 결과", example = "상품이 등록되었습니다.")
+        @Schema(description = "상품 등록 결과", example = "상품 등록이 완료되었습니다.")
         private String message;
 
         public RegisterResponse() {
@@ -64,4 +64,46 @@ public class ProductDto {
         }
     }
 
+    @Schema(description = "상품 수정 요청")
+    public static class UpdateRequest {
+
+        @NotBlank(message = "상품명을 입력해 주세요.")
+        @Schema(description = "상품 이름", example = "반팔티셔츠")
+        private String productName;
+
+        @NotNull(message = "상품 가격을 입력해 주세요.")
+        @Min(value = 0, message = "올바른 가격을 입력해 주세요.")
+        @Schema(description = "상품 가격", example = "10000")
+        private Integer price;
+
+        public UpdateRequest() {
+        }
+
+        public String getProductName() {
+            return productName;
+        }
+
+        public int getPrice() {
+            return price;
+        }
+
+    }
+
+    @Schema(description = "상품 수정 응답")
+    public static class UpdateResponse {
+        @Schema(description = "상품 수정 결과", example = "상품 수정이 완료되었습니다.")
+        private String message;
+
+        public UpdateResponse() {
+        }
+
+        public UpdateResponse(String result) {
+            this.message = result;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+    }
 }
