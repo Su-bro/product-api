@@ -4,10 +4,15 @@ import com.musinsa.product.application.ProductService;
 import com.musinsa.product.dto.PriceRangeResponse;
 import com.musinsa.product.dto.ProductByBrandResponse;
 import com.musinsa.product.dto.ProductByCategoryResponse;
+import com.musinsa.product.dto.ProductDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,4 +46,11 @@ public class ProductController {
         @Parameter(description = "카테고리 이름", example = "상의") @RequestParam String categoryName) {
         return ResponseEntity.ok(productService.getPriceRangeByCategory(categoryName));
     }
+
+    @Operation(summary = "상품 등록", description = "상품을 등록합니다.")
+    @PostMapping
+    public ResponseEntity<ProductDto.RegisterResponse> registerProduct(@RequestBody @Valid ProductDto.RegisterRequest request) {
+        return ResponseEntity.ok(productService.registerProduct(request.getProductName(), request.getPrice(), request.getBrandName(), request.getCategoryName()));
+    }
+
 }

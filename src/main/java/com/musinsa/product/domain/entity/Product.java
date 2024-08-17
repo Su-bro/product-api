@@ -42,10 +42,6 @@ public class Product {
         this.category = category;
     }
 
-    public static Product create(String name, int price, Brand brand, Category category) {
-        return new Product(name, price, brand, category);
-    }
-
     public Long getId() {
         return this.id;
     }

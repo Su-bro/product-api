@@ -2,6 +2,7 @@ package com.musinsa.product.domain.repository;
 
 import com.musinsa.product.domain.LowestPriceBrandProjection;
 import com.musinsa.product.domain.entity.Brand;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,4 +19,6 @@ public interface BrandRepository extends JpaRepository<Brand, Integer> {
             LIMIT 1
         """)
     LowestPriceBrandProjection findLowestPriceBrandWithAllCategories();
+
+    Optional<Brand> findByName(String brandName);
 }
