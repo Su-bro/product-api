@@ -10,11 +10,13 @@ import com.musinsa.product.domain.entity.Product;
 import com.musinsa.product.domain.repository.ProductRepository;
 import com.musinsa.product.domain.repository.CategoryRepository;
 import com.musinsa.product.domain.repository.BrandRepository;
+import com.musinsa.product.dto.PriceRangeResponse;
 import com.musinsa.product.dto.ProductByBrandResponse;
 import com.musinsa.product.dto.ProductByBrandResponse.ProductResponse;
 import com.musinsa.product.dto.ProductByCategoryResponse;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,14 +45,26 @@ class ProductServiceTest {
     static final String PRODUCT_NAME_1 = "test_product1";
     static final String PRODUCT_NAME_2 = "test_product2";
 
+    static Category category1;
+    static Category category2;
+    static Brand brand1;
+    static Brand brand2;
+    static Product product1;
+    static Product product2;
+
+    @BeforeEach
+    void setUp() {
+        category1 = new Category(CATEGORY_NAME_1);
+        category2 = new Category(CATEGORY_NAME_2);
+        brand1 = new Brand(BRAND_NAME_1);
+        brand2 = new Brand(BRAND_NAME_2);
+        product1 = new Product(PRODUCT_NAME_1, 10000, brand1, category1);
+        product2 = new Product(PRODUCT_NAME_2, 20000, brand2, category2);
+    }
+
     @Test
     void getLowestPriceProductByCategoryTest() {
         // Arrange
-        Category category1 = new Category(CATEGORY_NAME_1);
-        Category category2 = new Category(CATEGORY_NAME_2);
-        Brand brand = new Brand(BRAND_NAME_1);
-        Product product1 = new Product(PRODUCT_NAME_1, 10000, brand, category1);
-        Product product2 = new Product(PRODUCT_NAME_2, 20000, brand, category2);
         given(categoryRepository.findAllByOrderByIdAsc()).willReturn(List.of(category1, category2));
         given(productRepository.findTopByCategoryOrderByPriceAsc(category1)).willReturn(Optional.of(product1));
         given(productRepository.findTopByCategoryOrderByPriceAsc(category2)).willReturn(Optional.of(product2));
@@ -66,11 +80,6 @@ class ProductServiceTest {
     @Test
     void getLowestPriceProductByBrandTest() {
         // Arrange
-        Category category1 = new Category(CATEGORY_NAME_1);
-        Category category2 = new Category(CATEGORY_NAME_2);
-        Brand brand1 = new Brand(BRAND_NAME_1);
-        Product product1 = new Product(PRODUCT_NAME_1, 10000, brand1, category1);
-        Product product2 = new Product(PRODUCT_NAME_2, 20000, brand1, category2);
         given(brandRepository.findLowestPriceBrandWithAllCategories()).willReturn(
             new LowestPriceBrandProjectionImpl(brand1.getId(), brand1.getName(), 30000));
         given(productRepository.findLowestPriceProductsByBrandGroupByCategory(brand1.getId())).willReturn(
@@ -114,4 +123,24 @@ class ProductServiceTest {
             return totalPrice;
         }
     }
+
+    @Test
+    void getPriceRangeByCategoryTest() {
+        // Arrange
+        given(categoryRepository.findByName(CATEGORY_NAME_1)).willReturn(Optional.of(category1));
+        given(productRepository.findTopByCategoryOrderByPriceAsc(category1)).willReturn(Optional.of(product1));
+        given(productRepository.findTopByCategoryOrderByPriceDesc(category1)).willReturn(Optional.of(product2));
+
+        // Act
+        PriceRangeResponse result = productService.getPriceRangeByCategory(CATEGORY_NAME_1);
+
+        // Assert
+        assertThat(result).isNotNull();
+        assertThat(result.categoryName()).isEqualTo(CATEGORY_NAME_1);
+        assertThat(result.minPriceProduct().brandName()).isEqualTo(BRAND_NAME_1);
+        assertThat(result.minPriceProduct().price()).isEqualTo(10000);
+        assertThat(result.maxPriceProduct().brandName()).isEqualTo(BRAND_NAME_2);
+        assertThat(result.maxPriceProduct().price()).isEqualTo(20000);
+    }
+
 }

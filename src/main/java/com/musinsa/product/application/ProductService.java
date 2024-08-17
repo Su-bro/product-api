@@ -1,9 +1,11 @@
 package com.musinsa.product.application;
 
+import com.musinsa.common.exception.CategoryNotFoundException;
 import com.musinsa.product.domain.repository.BrandRepository;
 import com.musinsa.product.domain.LowestPriceBrandProjection;
 import com.musinsa.product.domain.repository.CategoryRepository;
 import com.musinsa.product.domain.repository.ProductRepository;
+import com.musinsa.product.dto.PriceRangeResponse;
 import com.musinsa.product.dto.ProductByBrandResponse;
 import com.musinsa.product.dto.ProductByBrandResponse.ProductResponse;
 import com.musinsa.product.dto.ProductByCategoryResponse;
@@ -48,6 +50,7 @@ public class ProductService {
 
     /**
      * 단일 브랜드로 모든 카테고리 상품을 구매할 때 최저가격에 판매하는 브랜드와 카테고리의 상품을 조회합니다.
+     *
      * @return 최저가격 브랜드와 카테고리별 상품 목록 및 총액
      */
     public ProductByBrandResponse getLowestPriceProductByBrand() {
@@ -59,5 +62,20 @@ public class ProductService {
             lowestPriceBrandProjection.getTotalPrice()
         );
     }
-    
+
+    /**
+     * 카테고리 이름으로 최저, 최고 가격 브랜드와 상품 가격을 조회합니다.
+     *
+     * @return 최저, 최고 가격 브랜드와 상품 가격
+     */
+    public PriceRangeResponse getPriceRangeByCategory(String categoryName) {
+        var category = categoryRepository.findByName(categoryName).orElseThrow(() -> new CategoryNotFoundException(categoryName));
+        var minPriceProduct = productRepository.findTopByCategoryOrderByPriceAsc(category).orElseThrow();
+        var maxPriceProduct = productRepository.findTopByCategoryOrderByPriceDesc(category).orElseThrow();
+        return new PriceRangeResponse(
+            category.getName(),
+            new PriceRangeResponse.ProductResponse(minPriceProduct.getBrand().getName(), minPriceProduct.getPrice()),
+            new PriceRangeResponse.ProductResponse(maxPriceProduct.getBrand().getName(), maxPriceProduct.getPrice())
+        );
+    }
 }

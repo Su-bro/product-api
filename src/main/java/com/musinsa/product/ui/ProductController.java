@@ -1,6 +1,7 @@
 package com.musinsa.product.ui;
 
 import com.musinsa.product.application.ProductService;
+import com.musinsa.product.dto.PriceRangeResponse;
 import com.musinsa.product.dto.ProductByBrandResponse;
 import com.musinsa.product.dto.ProductByCategoryResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,4 +35,10 @@ public class ProductController {
         return ResponseEntity.ok(productService.getLowestPriceProductByBrand());
     }
 
+    @Operation(summary = "카테고리별 최저, 최고 가격 상품 조회", description = "카테고리의 이름으로 최저, 최고 가격 상품을 조회합니다.")
+    @GetMapping("/price-range")
+    public ResponseEntity<PriceRangeResponse> getPriceRangeByCategory(
+        @Parameter(description = "카테고리 이름", example = "상의") @RequestParam String categoryName) {
+        return ResponseEntity.ok(productService.getPriceRangeByCategory(categoryName));
+    }
 }

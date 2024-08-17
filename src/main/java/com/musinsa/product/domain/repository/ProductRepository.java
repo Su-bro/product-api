@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
     Optional<Product> findTopByCategoryOrderByPriceAsc(Category category);
+
+    Optional<Product> findTopByCategoryOrderByPriceDesc(Category category);
 }
