@@ -4,8 +4,6 @@ import static org.mockito.BDDMockito.given;
 
 import com.musinsa.common.util.MessageUtil;
 import com.musinsa.product.domain.entity.Brand;
-import com.musinsa.product.domain.entity.Category;
-import com.musinsa.product.domain.entity.Product;
 import com.musinsa.product.domain.repository.BrandRepository;
 import com.musinsa.product.domain.repository.ProductRepository;
 import java.util.Optional;
@@ -29,28 +27,14 @@ class BrandServiceTest {
     @InjectMocks
     private BrandService brandService;
 
-    static final String CATEGORY_NAME_1 = "test_category1";
-    static final String CATEGORY_NAME_2 = "test_category2";
     static final String BRAND_NAME_1 = "test_brand1";
     static final String BRAND_NAME_2 = "test_brand2";
-    static final String PRODUCT_NAME_1 = "test_product1";
-    static final String PRODUCT_NAME_2 = "test_product2";
 
-    static Category category1;
-    static Category category2;
-    static Brand brand1;
-    static Brand brand2;
-    static Product product1;
-    static Product product2;
+    static Brand brand;
 
     @BeforeEach
     void setUp() {
-        category1 = new Category(CATEGORY_NAME_1);
-        category2 = new Category(CATEGORY_NAME_2);
-        brand1 = new Brand(BRAND_NAME_1);
-        brand2 = new Brand(BRAND_NAME_2);
-        product1 = new Product(PRODUCT_NAME_1, 10000, brand1, category1);
-        product2 = new Product(PRODUCT_NAME_2, 20000, brand2, category2);
+        brand = new Brand(BRAND_NAME_1);
     }
 
     @Test
@@ -71,7 +55,7 @@ class BrandServiceTest {
     @Test
     void updateBrandTest() {
         // Arrange
-        given(brandRepository.findByIdAndIsDeletedFalse(1)).willReturn(Optional.of(brand1));
+        given(brandRepository.findByIdAndIsDeletedFalse(1)).willReturn(Optional.of(brand));
 
         // Act
         var response = brandService.updateBrand(1, BRAND_NAME_2, "modified");
@@ -80,15 +64,15 @@ class BrandServiceTest {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(response).isNotNull();
             softly.assertThat(response.getMessage()).isEqualTo(MessageUtil.getMsg("M005"));
-            softly.assertThat(brand1.getName()).isEqualTo(BRAND_NAME_2);
-            softly.assertThat(brand1.getDesc()).isEqualTo("modified");
+            softly.assertThat(brand.getName()).isEqualTo(BRAND_NAME_2);
+            softly.assertThat(brand.getDesc()).isEqualTo("modified");
         });
     }
 
     @Test
     void deleteBrandTest() {
         // Arrange
-        given(brandRepository.findByIdAndIsDeletedFalse(1)).willReturn(Optional.of(brand1));
+        given(brandRepository.findByIdAndIsDeletedFalse(1)).willReturn(Optional.of(brand));
 
         // Act
         var response = brandService.deleteBrand(1);
@@ -97,7 +81,7 @@ class BrandServiceTest {
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(response).isNotNull();
             softly.assertThat(response.getMessage()).isEqualTo(MessageUtil.getMsg("M006"));
-            softly.assertThat(brand1.isDeleted()).isTrue();
+            softly.assertThat(brand.isDeleted()).isTrue();
         });
     }
 

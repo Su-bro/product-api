@@ -76,8 +76,11 @@ class ProductServiceTest {
         ProductByCategoryResponse result = productService.getLowestPriceProductByCategory();
 
         // Assert
-        assertThat(result).isNotNull();
-        assertThat(result.products()).hasSize(2);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(result).isNotNull();
+            softly.assertThat(result.totalPrice()).isEqualTo(30000);
+            softly.assertThat(result.products()).hasSize(2);
+        });
     }
 
     @Test
@@ -93,10 +96,12 @@ class ProductServiceTest {
         ProductByBrandResponse result = productService.getLowestPriceProductByBrand();
 
         // Assert
-        assertThat(result).isNotNull();
-        assertThat(result.products()).hasSize(2);
-        assertThat(result.totalPrice()).isEqualTo(30000);
-        assertThat(result.brandName()).isEqualTo(BRAND_NAME_1);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(result).isNotNull();
+            softly.assertThat(result.products()).hasSize(2);
+            softly.assertThat(result.totalPrice()).isEqualTo(30000);
+            softly.assertThat(result.brandName()).isEqualTo(BRAND_NAME_1);
+        });
     }
 
     static class LowestPriceBrandProjectionImpl implements LowestPriceBrandProjection {
@@ -138,12 +143,14 @@ class ProductServiceTest {
         PriceRangeResponse result = productService.getPriceRangeByCategory(CATEGORY_NAME_1);
 
         // Assert
-        assertThat(result).isNotNull();
-        assertThat(result.categoryName()).isEqualTo(CATEGORY_NAME_1);
-        assertThat(result.minPriceProduct().brandName()).isEqualTo(BRAND_NAME_1);
-        assertThat(result.minPriceProduct().price()).isEqualTo(10000);
-        assertThat(result.maxPriceProduct().brandName()).isEqualTo(BRAND_NAME_2);
-        assertThat(result.maxPriceProduct().price()).isEqualTo(20000);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(result).isNotNull();
+            softly.assertThat(result.categoryName()).isEqualTo(CATEGORY_NAME_1);
+            softly.assertThat(result.minPriceProduct().brandName()).isEqualTo(BRAND_NAME_1);
+            softly.assertThat(result.minPriceProduct().price()).isEqualTo(10000);
+            softly.assertThat(result.maxPriceProduct().brandName()).isEqualTo(BRAND_NAME_2);
+            softly.assertThat(result.maxPriceProduct().price()).isEqualTo(20000);
+        });
     }
 
     @Test
@@ -155,8 +162,11 @@ class ProductServiceTest {
         ProductDto.RegisterResponse result = productService.registerProduct(PRODUCT_NAME_1, 10000, BRAND_NAME_1, CATEGORY_NAME_1);
 
         // Assert
-        assertThat(result).isNotNull();
-        assertThat(result.getMessage()).isEqualTo(MessageUtil.getMsg("M001"));
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(result).isNotNull();
+            softly.assertThat(result.getMessage()).isEqualTo(MessageUtil.getMsg("M001"));
+        });
+
     }
 
     @Test
@@ -167,10 +177,13 @@ class ProductServiceTest {
         ProductDto.UpdateResponse result = productService.updateProduct(1L, PRODUCT_NAME_2, 11000);
 
         // Assert
-        assertThat(result).isNotNull();
-        assertThat(result.getMessage()).isEqualTo(MessageUtil.getMsg("M002"));
-        assertThat(product1.getName()).isEqualTo(PRODUCT_NAME_2);
-        assertThat(product1.getPrice()).isEqualTo(11000);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(result).isNotNull();
+            softly.assertThat(result.getMessage()).isEqualTo(MessageUtil.getMsg("M002"));
+            softly.assertThat(product1.getBrand()).isEqualTo(brand1);
+            softly.assertThat(product1.getName()).isEqualTo(PRODUCT_NAME_2);
+            softly.assertThat(product1.getPrice()).isEqualTo(11000);
+        });
     }
 
     @Test
