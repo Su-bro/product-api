@@ -26,5 +26,11 @@ public class BrandService {
         return new RegisterResponse(MessageUtil.getMsg("M004"));
     }
 
-
+    @Transactional
+    public RegisterResponse updateBrand(int brandId, String brandName, String brandDesc) {
+        brandRepository.findById(brandId)
+            .orElseThrow(() -> new IllegalArgumentException(MessageUtil.getMsg("E002")))
+            .update(brandName, brandDesc);
+        return new RegisterResponse(MessageUtil.getMsg("M005"));
+    }
 }

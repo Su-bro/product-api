@@ -64,5 +64,22 @@ class BrandServiceTest {
         });
     }
 
+    @Test
+    void updateBrandTest() {
+        // Arrange
+        given(brandRepository.findById(1)).willReturn(Optional.of(brand1));
+
+        // Act
+        var response = brandService.updateBrand(1, BRAND_NAME_2, "modified");
+
+        // Assert
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(response).isNotNull();
+            softly.assertThat(response.getMessage()).isEqualTo(MessageUtil.getMsg("M005"));
+            softly.assertThat(brand1.getName()).isEqualTo(BRAND_NAME_2);
+            softly.assertThat(brand1.getDesc()).isEqualTo("modified");
+        });
+    }
+
 
 }

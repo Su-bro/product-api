@@ -44,6 +44,15 @@ public class Brand {
         return this.name;
     }
 
+    public String getDesc() {
+        return this.desc;
+    }
+
+    public void update(String brandName, String brandDesc) {
+        this.name = brandName;
+        this.desc = brandDesc;
+    }
+
     public String toString() {
         return "Brand(id=" + this.getId() + ", name=" + this.getName() + ")";
     }

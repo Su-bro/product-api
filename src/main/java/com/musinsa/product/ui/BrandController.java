@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,12 @@ public class BrandController {
     @PostMapping
     public ResponseEntity<BrandDto.RegisterResponse> registerBrand(@RequestBody @Valid BrandDto.RegisterRequest request) {
         return ResponseEntity.ok(brandService.registerBrand(request.getBrandName(), request.getBrandDesc()));
+    }
+
+    @Operation(summary = "브랜드 수정", description = "브랜드명, 브랜드 설명을 수정합니다.")
+    @PutMapping
+    public ResponseEntity<BrandDto.RegisterResponse> updateBrand(@RequestBody @Valid BrandDto.UpdateRequest request) {
+        return ResponseEntity.ok(brandService.updateBrand(request.getBrandId(), request.getBrandName(), request.getBrandDesc()));
     }
 
 
