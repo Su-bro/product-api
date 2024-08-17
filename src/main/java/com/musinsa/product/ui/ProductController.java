@@ -43,7 +43,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getLowestPriceProductByBrand());
     }
 
-    @Operation(summary = "카테고리별 최저, 최고 가격 상품 조회", description = "카테고리의 이름으로 최저, 최고 가격 상품을 조회합니다.")
+    @Operation(summary = "특정 카테고리의 최저, 최고 가격 상품 조회", description = "카테고리의 이름으로 최저, 최고 가격 상품을 조회합니다.")
     @GetMapping("/price-range")
     public ResponseEntity<PriceRangeResponse> getPriceRangeByCategory(
         @Parameter(description = "카테고리 이름", example = "상의") @RequestParam String categoryName) {

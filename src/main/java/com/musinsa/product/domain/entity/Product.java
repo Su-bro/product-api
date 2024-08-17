@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Table(name = "product")
@@ -18,19 +19,24 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Comment("상품명")
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    @Comment("가격")
     @Column(name = "price", nullable = false)
     private int price;
 
+    @Comment("삭제 여부")
     @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
     private boolean isDeleted;
 
+    @Comment("브랜드")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
+    @Comment("카테고리")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;

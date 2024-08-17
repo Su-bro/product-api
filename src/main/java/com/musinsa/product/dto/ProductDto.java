@@ -10,7 +10,7 @@ public class ProductDto {
     private ProductDto() {
     }
 
-    @Schema(description = "상품 등록 요청")
+    @Schema(description = "상품 등록 요청", name = "ProductDto.RegisterRequest")
     public static class RegisterRequest {
 
         @NotBlank(message = "상품명을 입력해 주세요.")
@@ -48,7 +48,7 @@ public class ProductDto {
 
     }
 
-    @Schema(description = "상품 등록 응답")
+    @Schema(description = "상품 등록 응답", name = "ProductDto.RegisterResponse")
     public static class RegisterResponse {
 
         @Schema(description = "상품 등록 결과", example = "상품 등록이 완료되었습니다.")
@@ -66,7 +66,7 @@ public class ProductDto {
         }
     }
 
-    @Schema(description = "상품 수정 요청")
+    @Schema(description = "상품 수정 요청", name = "ProductDto.UpdateRequest")
     public static class UpdateRequest {
 
         @NotBlank(message = "상품명을 입력해 주세요.")
@@ -91,7 +91,7 @@ public class ProductDto {
 
     }
 
-    @Schema(description = "상품 수정 응답")
+    @Schema(description = "상품 수정 응답", name = "ProductDto.UpdateResponse")
     public static class UpdateResponse {
 
         @Schema(description = "상품 수정 결과", example = "상품 수정이 완료되었습니다.")
@@ -110,7 +110,7 @@ public class ProductDto {
 
     }
 
-    @Schema(description = "상품 삭제 응답")
+    @Schema(description = "상품 삭제 응답", name = "ProductDto.DeleteResponse")
     public static class DeleteResponse {
 
         @Schema(description = "상품 삭제 결과", example = "상품 삭제가 완료되었습니다.")

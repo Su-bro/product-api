@@ -25,6 +25,7 @@ public class Brand {
     @Column(name = "desc", length = 500, nullable = false, columnDefinition = "varchar(500) default ''")
     private String desc;
 
+    @Comment("삭제 여부")
     @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
     private boolean isDeleted;
 
