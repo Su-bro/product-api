@@ -1,9 +1,11 @@
 package com.musinsa.product.application;
 
 import com.musinsa.common.exception.DuplicateBrandException;
+import com.musinsa.common.exception.ResourceNotFoundException;
 import com.musinsa.common.util.MessageUtil;
 import com.musinsa.product.domain.entity.Brand;
 import com.musinsa.product.domain.repository.BrandRepository;
+import com.musinsa.product.domain.repository.ProductRepository;
 import com.musinsa.product.dto.BrandDto.RegisterResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -12,9 +14,11 @@ import org.springframework.stereotype.Service;
 public class BrandService {
 
     private final BrandRepository brandRepository;
+    private final ProductRepository productRepository;
 
-    public BrandService(BrandRepository brandRepository) {
+    public BrandService(BrandRepository brandRepository, ProductRepository productRepository) {
         this.brandRepository = brandRepository;
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -28,9 +32,18 @@ public class BrandService {
 
     @Transactional
     public RegisterResponse updateBrand(int brandId, String brandName, String brandDesc) {
-        brandRepository.findById(brandId)
-            .orElseThrow(() -> new IllegalArgumentException(MessageUtil.getMsg("E002")))
+        brandRepository.findByIdAndIsDeletedFalse(brandId)
+            .orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E002")))
             .update(brandName, brandDesc);
         return new RegisterResponse(MessageUtil.getMsg("M005"));
+    }
+
+    @Transactional
+    public RegisterResponse deleteBrand(int brandId) {
+        var brand = brandRepository.findByIdAndIsDeletedFalse(brandId)
+            .orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E002")));
+        productRepository.deleteAllByBrand(brand);
+        brand.delete();
+        return new RegisterResponse(MessageUtil.getMsg("M006"));
     }
 }

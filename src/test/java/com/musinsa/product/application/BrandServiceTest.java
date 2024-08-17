@@ -7,6 +7,7 @@ import com.musinsa.product.domain.entity.Brand;
 import com.musinsa.product.domain.entity.Category;
 import com.musinsa.product.domain.entity.Product;
 import com.musinsa.product.domain.repository.BrandRepository;
+import com.musinsa.product.domain.repository.ProductRepository;
 import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,9 @@ class BrandServiceTest {
 
     @Mock
     private BrandRepository brandRepository;
+
+    @Mock
+    private ProductRepository productRepository;
 
     @InjectMocks
     private BrandService brandService;
@@ -67,7 +71,7 @@ class BrandServiceTest {
     @Test
     void updateBrandTest() {
         // Arrange
-        given(brandRepository.findById(1)).willReturn(Optional.of(brand1));
+        given(brandRepository.findByIdAndIsDeletedFalse(1)).willReturn(Optional.of(brand1));
 
         // Act
         var response = brandService.updateBrand(1, BRAND_NAME_2, "modified");
@@ -78,6 +82,22 @@ class BrandServiceTest {
             softly.assertThat(response.getMessage()).isEqualTo(MessageUtil.getMsg("M005"));
             softly.assertThat(brand1.getName()).isEqualTo(BRAND_NAME_2);
             softly.assertThat(brand1.getDesc()).isEqualTo("modified");
+        });
+    }
+
+    @Test
+    void deleteBrandTest() {
+        // Arrange
+        given(brandRepository.findByIdAndIsDeletedFalse(1)).willReturn(Optional.of(brand1));
+
+        // Act
+        var response = brandService.deleteBrand(1);
+
+        // Assert
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(response).isNotNull();
+            softly.assertThat(response.getMessage()).isEqualTo(MessageUtil.getMsg("M006"));
+            softly.assertThat(brand1.isDeleted()).isTrue();
         });
     }
 

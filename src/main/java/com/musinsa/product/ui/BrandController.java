@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +36,12 @@ public class BrandController {
     @PutMapping
     public ResponseEntity<BrandDto.RegisterResponse> updateBrand(@RequestBody @Valid BrandDto.UpdateRequest request) {
         return ResponseEntity.ok(brandService.updateBrand(request.getBrandId(), request.getBrandName(), request.getBrandDesc()));
+    }
+
+    @Operation(summary = "브랜드 삭제", description = "브랜드를 삭제합니다.")
+    @DeleteMapping("/{brandId}")
+    public ResponseEntity<BrandDto.RegisterResponse> deleteBrand(@PathVariable("brandId") int brandId) {
+        return ResponseEntity.ok(brandService.deleteBrand(brandId));
     }
 
 

@@ -5,11 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.Comment;
 
 @Entity
-@Table(name = "brand")
+@Table(name = "brand", indexes = @Index(name = "idx_brand_is_deleted", columnList = "is_deleted"))
 public class Brand {
 
     @Id
@@ -23,6 +24,9 @@ public class Brand {
     @Comment("브랜드 설명")
     @Column(name = "desc", length = 500, nullable = false, columnDefinition = "varchar(500) default ''")
     private String desc;
+
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
+    private boolean isDeleted;
 
     protected Brand() {
     }
@@ -48,6 +52,10 @@ public class Brand {
         return this.desc;
     }
 
+    public boolean isDeleted() {
+        return this.isDeleted;
+    }
+
     public void update(String brandName, String brandDesc) {
         this.name = brandName;
         this.desc = brandDesc;
@@ -57,4 +65,7 @@ public class Brand {
         return "Brand(id=" + this.getId() + ", name=" + this.getName() + ")";
     }
 
+    public void delete() {
+        this.isDeleted = true;
+    }
 }

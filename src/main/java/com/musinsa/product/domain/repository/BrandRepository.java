@@ -15,6 +15,7 @@ public interface BrandRepository extends JpaRepository<Brand, Integer> {
                            FROM product p
                            WHERE p.is_deleted = FALSE
                            GROUP BY p.brand_id, p.category_id) mp ON mp.brand_id = b.id
+            WHERE b.is_deleted = false
             GROUP BY b.id
             HAVING COUNT(DISTINCT mp.category_id) = (SELECT COUNT(*) FROM category)
             ORDER BY SUM(mp.min_price)
@@ -23,4 +24,8 @@ public interface BrandRepository extends JpaRepository<Brand, Integer> {
     Optional<LowestPriceBrandProjection> findLowestPriceBrandWithAllCategories();
 
     Optional<Brand> findByName(String brandName);
+
+    Optional<Brand> findByIdAndIsDeletedFalse(int brandId);
+
+    Optional<Brand> findByNameAndIsDeletedFalse(String brandName);
 }

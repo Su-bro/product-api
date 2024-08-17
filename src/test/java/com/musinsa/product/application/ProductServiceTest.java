@@ -150,7 +150,7 @@ class ProductServiceTest {
     void registerProductTest() {
         // Arrange
         given(categoryRepository.findByName(CATEGORY_NAME_1)).willReturn(Optional.of(category1));
-        given(brandRepository.findByName(BRAND_NAME_1)).willReturn(Optional.of(brand1));
+        given(brandRepository.findByNameAndIsDeletedFalse(BRAND_NAME_1)).willReturn(Optional.of(brand1));
         // Act
         ProductDto.RegisterResponse result = productService.registerProduct(PRODUCT_NAME_1, 10000, BRAND_NAME_1, CATEGORY_NAME_1);
 

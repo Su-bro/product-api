@@ -98,4 +98,23 @@ public class BrandDto {
 
     }
 
+    @Schema(description = "브랜드 삭제 응답", name = "BrandDto.DeleteResponse")
+    public static class DeleteResponse {
+
+        @Schema(description = "브랜드 삭제 결과", example = "브랜드 삭제가 완료되었습니다.")
+        private String message;
+
+        public DeleteResponse() {
+        }
+
+        public DeleteResponse(String result) {
+            this.message = result;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+    }
+
 }

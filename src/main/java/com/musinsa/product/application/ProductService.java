@@ -99,7 +99,7 @@ public class ProductService {
      */
     public RegisterResponse registerProduct(String productName, int price, String brandName, String categoryName) {
         var category = categoryRepository.findByName(categoryName).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E003")));
-        var brand = brandRepository.findByName(brandName).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E002")));
+        var brand = brandRepository.findByNameAndIsDeletedFalse(brandName).orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E002")));
         productRepository.save(new Product(productName, price, brand, category));
         return new RegisterResponse(MessageUtil.getMsg("M001"));
     }
