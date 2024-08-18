@@ -1,4 +1,7 @@
 spring:
+  sql:
+    init:
+      encoding: utf-8
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
