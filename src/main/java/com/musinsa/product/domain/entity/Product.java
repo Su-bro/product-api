@@ -85,7 +85,8 @@ public class Product {
     }
 
     public String toString() {
-        return "Product(id=" + this.getId() + ", name=" + this.getName() + ", price=" + this.getPrice() + ", brand=" + this.getBrand() + ", category=" + this.getCategory() + ")";
+        return "Product(id=" + this.getId() + ", name=" + this.getName() + ", price=" + this.getPrice() + ", brand=" + this.getBrand() + ", category="
+            + this.getCategory() + ")";
     }
 
 }

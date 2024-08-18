@@ -5,6 +5,10 @@ import java.util.ResourceBundle;
 
 public class MessageUtil {
 
+    private MessageUtil() {
+
+    }
+
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("messages");
 
     public static String getMsg(String key) {
