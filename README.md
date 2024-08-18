@@ -18,42 +18,38 @@
 
 ```
 src
-├── main
-│	 ├── java
-│	 │	 └── com
-│	 │	     └── musinsa
-│	 │	         ├── ProductApiApplication.java
-│	 │	         ├── ServletInitializer.java
-│	 │	         ├── common
-│	 │	         │	 ├── exception : 커스텀 예외, 핸들러
-│	 │	         │	 ├── response : 커스텀 오류 응답
-│	 │	         │	 └── util : 유틸리티
-│	 │	         └── product
-│	 │	             ├── application : 어플리케이션 계층
-│	 │	             │	 ├── BrandService.java
-│	 │	             │	 └── ProductService.java
-│	 │	             ├── domain : 도메인 계층
-│	 │	             │	 ├── entity : 영속성 엔티티
-│	 │	             │	 └── repository : 레포지토리 인터페이스
-│	 │	             ├── dto : 계층 간 데이터 전달을 위한 DTO
-│	 │	             ├── infrastructure : 인프라 계층
-│	 │	             └── ui : 프레젠테이션 계층
-│	 │	                 ├── BrandController.java
-│	 │	                 └── ProductController.java
-│	 └── resources
-│	     ├── application.yml
-│	     ├── data.sql : H2 DB 초기 삽입 데이터
-│	     ├── messages.properties : 메시지
-│	     ├── static : 정적 웹 리소스
-│	     └── templates
-└── test
-    └── java
-        └── com
-            └── musinsa
-                ├── ProductApiApplicationTests.java
-                └── product
-                    ├── application : 단위 테스트
-                    └── ui : 인수 테스트
+├─main
+│  ├─java
+│  │  └─com
+│  │      └─musinsa
+│  │          ├─common
+│  │          │  ├─exception
+│  │          │  ├─response
+│  │          │  ├─ui
+│  │          │  └─util
+│  │          └─product
+│  │              ├─application
+│  │              ├─domain
+│  │              │  ├─entity
+│  │              │  └─repository
+│  │              ├─dto
+│  │              ├─infrastructure
+│  │              └─ui
+│  └─resources
+│      └─static
+│          └─css
+└─test
+    └─java
+        └─com
+            └─musinsa
+                ├─common
+                │  └─util
+                └─product
+                    ├─application
+                    ├─domain
+                    │  ├─entity
+                    │  └─repository
+                    └─ui
 
 ```
 
@@ -297,5 +293,5 @@ java -jar build/libs/product-api-0.0.1-SNAPSHOT.war
     - User Name: sa
     - Password:
 ### API 문서
-- http://localhost:8080/swagger-ui/index.html
+- URL : http://localhost:8080/swagger-ui/index.html
 
