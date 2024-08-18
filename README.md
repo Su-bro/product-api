@@ -284,3 +284,17 @@ src
 ```shell
 java -jar build/libs/product-api-0.0.1-SNAPSHOT.war
 ```
+
+## 기타 추가 정보
+### H2 DB console
+- URL : http://localhost:8080/h2-console
+- Login 
+    - JDBC URL: jdbc:h2:mem:testdb
+    - User Name: sa
+    - Password:
+### API 문서
+- http://localhost:8080/swagger-ui/index.html
+### 상품 조회 페이지
+- http://localhost:8080/home
+### 관리자 페이지
+- http://localhost:8080/admin
