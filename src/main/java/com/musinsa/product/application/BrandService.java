@@ -32,9 +32,14 @@ public class BrandService {
 
     @Transactional
     public RegisterResponse updateBrand(int brandId, String brandName, String brandDesc) {
-        brandRepository.findByIdAndIsDeletedFalse(brandId)
-            .orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E002")))
-            .update(brandName, brandDesc);
+        var brand = brandRepository.findByIdAndIsDeletedFalse(brandId)
+            .orElseThrow(() -> new ResourceNotFoundException(MessageUtil.getMsg("E002")));
+        if (!brand.getName().equals(brandName)) {
+            brandRepository.findByName(brandName).ifPresent(b -> {
+                throw new DuplicateBrandException(MessageUtil.getMsg("E005"));
+            });
+        }
+        brand.update(brandName, brandDesc);
         return new RegisterResponse(MessageUtil.getMsg("M005"));
     }
 
