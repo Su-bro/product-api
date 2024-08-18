@@ -59,7 +59,12 @@ src
 
 ## 구현 범위
 
-### 주요 기능
+### 상품 조회 페이지
+- http://localhost:8080/home
+### 관리자 페이지
+- http://localhost:8080/admin
+
+### API
 1. **카테고리별 최저가격 브랜드와 상품 가격, 총액을 조회하는 API**
     - 카테고리별로 최저가격인 브랜드와 가격과 상품 총액을 조회할 수 있습니다.
     - GET /api/products/lowest-price-by-category
@@ -270,8 +275,8 @@ src
     }
     ```
 
-## 코드 빌드, 테스트, 실행 방법
-### 빌드
+## 빌드, 테스트, 실행 방법
+### 빌드&테스트
 ```shell
 ./gradlew clean build
 ```
@@ -293,7 +298,4 @@ java -jar build/libs/product-api-0.0.1-SNAPSHOT.war
     - Password:
 ### API 문서
 - http://localhost:8080/swagger-ui/index.html
-### 상품 조회 페이지
-- http://localhost:8080/home
-### 관리자 페이지
-- http://localhost:8080/admin
+
