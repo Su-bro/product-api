@@ -12,8 +12,8 @@
 - 프레임워크 : Spring Boot 3.3.2, Spring Data JPA, QueryDSL
 - 빌드 도구 : Gradle 8.8
 - 데이터베이스 : in-memory H2 DB
-- 테스트 : JUnit 5, Mockito, AssertJ
-- 프론트엔드 : thymeleaf
+- 테스트 : JUnit, Mockito, AssertJ
+- 프론트엔드 : Thymeleaf
 - API 문서 : SpringDoc OpenAPI
 
 ```
@@ -25,10 +25,9 @@ src
 │	 │	         ├── ProductApiApplication.java
 │	 │	         ├── ServletInitializer.java
 │	 │	         ├── common
-│	 │	         │	 ├── exception : 커스텀 exception 및 handler
-│	 │	         │	 ├── response : 커스텀 error response
-│	 │	         │	 ├── ui : front-end forwading 인터페이스
-│	 │	         │	 └── util : 공통 유틸리티
+│	 │	         │	 ├── exception : 커스텀 예외, 핸들러
+│	 │	         │	 ├── response : 커스텀 오류 응답
+│	 │	         │	 └── util : 유틸리티
 │	 │	         └── product
 │	 │	             ├── application : 어플리케이션 계층
 │	 │	             │	 ├── BrandService.java
@@ -37,7 +36,7 @@ src
 │	 │	             │	 ├── entity : 영속성 엔티티
 │	 │	             │	 └── repository : 레포지토리 인터페이스
 │	 │	             ├── dto : 계층 간 데이터 전달을 위한 DTO
-│	 │	             ├── infrastructure : 레포지토리 구현체 
+│	 │	             ├── infrastructure : 인프라 계층
 │	 │	             └── ui : 프레젠테이션 계층
 │	 │	                 ├── BrandController.java
 │	 │	                 └── ProductController.java
