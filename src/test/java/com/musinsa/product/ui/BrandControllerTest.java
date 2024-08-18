@@ -27,7 +27,7 @@ class BrandControllerTest {
     @Test
     void registerBrandSuccessTest() throws Exception {
         mockMvc.perform(
-                post("/api/bands")
+                post("/api/brands")
                     .content("{\"brandName\": \"무탠다드\", \"brandDesc\": \"여름엔 쿨탠다드 겨울엔 힛탠다드\"}")
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -39,7 +39,7 @@ class BrandControllerTest {
     @Test
     void registerBrandFailByDuplicateBrandNameTest() throws Exception {
         mockMvc.perform(
-                post("/api/bands")
+                post("/api/brands")
                     .content("{\"brandName\": \"무탠다드2\", \"brandDesc\": \"여름엔 쿨탠다드 겨울엔 힛탠다드2\"}")
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -48,7 +48,7 @@ class BrandControllerTest {
             .andExpect(jsonPath("$.message").value(MessageUtil.getMsg("M004")));
 
         mockMvc.perform(
-                post("/api/bands")
+                post("/api/brands")
                     .content("{\"brandName\": \"무탠다드2\", \"brandDesc\": \"여름엔 쿨탠다드 겨울엔 힛탠다드2\"}")
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -60,7 +60,7 @@ class BrandControllerTest {
     @Test
     void registerBrandFailByEmptyBrandNameTest() throws Exception {
         mockMvc.perform(
-                post("/api/bands")
+                post("/api/brands")
                     .content("{\"brandDesc\": \"여름엔 쿨탠다드 겨울엔 힛탠다드\"}")
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -69,7 +69,7 @@ class BrandControllerTest {
             .andExpect(jsonPath("$.message").value("브랜드명을 입력해 주세요."));
 
         mockMvc.perform(
-                post("/api/bands")
+                post("/api/brands")
                     .content("{\"brandName\": \"무\", \"brandDesc\": \"여름엔 쿨탠다드 겨울엔 힛탠다드\"}")
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -78,7 +78,7 @@ class BrandControllerTest {
             .andExpect(jsonPath("$.message").value("브랜드명은 2글자 이상 20글자 이하로 입력 가능합니다."));
 
         mockMvc.perform(
-                post("/api/bands")
+                post("/api/brands")
                     .content("{\"brandName\": \"무탠다드!\", \"brandDesc\": \"여름엔 쿨탠다드 겨울엔 힛탠다드\"}")
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -90,7 +90,7 @@ class BrandControllerTest {
     @Test
     void updateBrandSuccessTest() throws Exception {
         mockMvc.perform(
-                put("/api/bands")
+                put("/api/brands")
                     .content("{\"brandId\": 1, \"brandName\": \"무탠\", \"brandDesc\": \"여름엔 쿨탠다드 겨울엔 힛탠다드\"}")
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -102,7 +102,7 @@ class BrandControllerTest {
     @Test
     void updateBrandFailByEmptyBrandIdTest() throws Exception {
         mockMvc.perform(
-                put("/api/bands")
+                put("/api/brands")
                     .content("{\"brandId\": -1,\"brandName\": \"무탠\", \"brandDesc\": \"여름엔 쿨탠다드 겨울엔 힛탠다드\"}")
                     .contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
@@ -114,7 +114,7 @@ class BrandControllerTest {
     @Test
     void deleteBrandSuccessTest() throws Exception {
         mockMvc.perform(
-                delete("/api/bands/2"))
+                delete("/api/brands/2"))
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -124,7 +124,7 @@ class BrandControllerTest {
     @Test
     void deleteBrandFailByEmptyBrandIdTest() throws Exception {
         mockMvc.perform(
-                delete("/api/bands/-1"))
+                delete("/api/brands/-1"))
             .andDo(print())
             .andExpect(status().isBadRequest())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))

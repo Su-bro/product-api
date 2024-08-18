@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/bands")
+@RequestMapping("/api/brands")
 @Tag(name = "Brand", description = "브랜드 API")
 public class BrandController {
     // 생성 업데이트 삭제

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>무진장 특가</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+<div id="app">
+
+  <header>
+    <h1 class="title">MUSINSA</h1>
+    <el-menu
+        :default-active="activeIndex"
+        class="el-menu-demo"
+        mode="horizontal"
+        @select="handleSelect"
+        background-color="#000"
+        text-color="#999"
+        active-text-color="#FFF">
+      <el-menu-item index="1">무진장 특가</el-menu-item>
+      <el-menu-item index="2">관리자 페이지</el-menu-item>
+    </el-menu>
+  </header>
+
+  <main>
+    <div id="mp">
+      <section class="section">
+        <h2>최저가 상품</h2>
+        <h4>카테고리별 최저가격 상품</h4>
+        <div v-if="lowestPriceProductByCategory">
+          <h4>
+            모든 카테고리의 상품을 최저가로 구매할 시 총 {{ lowestPriceProductByCategory.totalPrice.toLocaleString() }}₩
+          </h4>
+          <el-table :data="lowestPriceProductByCategory.products" border style="width: 50%">
+            <el-table-column prop="categoryName" label="카테고리"></el-table-column>
+            <el-table-column prop="brandName" label="브랜드"></el-table-column>
+            <el-table-column prop="price" label="가격"></el-table-column>
+          </el-table>
+        </div>
+      </section>
+      <hr/>
+
+      <section class="section">
+        <h2>무진장 할인 브랜드</h2>
+        <h4>단일 브랜드로 모든 카테고리 상품을 구매할 경우 최저가 브랜드</h4>
+        <div v-if="lowestPriceProductByBrand">
+          <h4>초특가 브랜드 [ {{ lowestPriceProductByBrand.brandName}} ]</h4>
+          <h4>
+            {{ lowestPriceProductByBrand.brandName}} 브랜드의 모든 상품을 구매할 시 총 {{ lowestPriceProductByBrand.totalPrice.toLocaleString() }}₩
+          </h4>
+          <el-table :data="lowestPriceProductByBrand.products" border style="width: 50%">
+            <el-table-column prop="categoryName" label="카테고리"></el-table-column>
+            <el-table-column prop="price" label="가격"></el-table-column>
+          </el-table>
+        </div>
+      </section>
+      <hr/>
+
+      <section class="section">
+        <h2>카테고리의 최저/최고 가격 상품</h2>
+        <h3>카테고리 이름으로 최저, 최고 가격 상품을 검색합니다.</h3>
+        <div style="display: flex; align-items: center;">
+          <span style="margin-left: 10px; margin-right: 10px">카테고리 :</span>
+          <el-input @keyup.native.enter="getPriceRangeByCategory" placeholder="카테고리 이름을 입력하세요" v-model="categoryName" style="width: 200px">
+            <el-button slot="append" icon="el-icon-search" @click="getPriceRangeByCategory" style="background-color: black; color: white"/>
+          </el-input>
+        </div>
+        <div v-if="priceRangeByCategory">
+          <i class="el-icon-bottom" style="color: blue"></i>
+          <span>
+            최저가 : {{ priceRangeByCategory.minPriceProduct.price.toLocaleString() }}₩ | 브랜드 : {{ priceRangeByCategory.minPriceProduct.brandName }}
+          </span>
+          <br/>
+          <i class="el-icon-top" style="color: red"></i>
+          <span>
+            최고가 : {{ priceRangeByCategory.maxPriceProduct.price.toLocaleString() }}₩ | 브랜드 : {{ priceRangeByCategory.maxPriceProduct.brandName }}
+          </span>
+        </div>
+        <div v-else>
+          <el-empty description="검색 결과가 없습니다."></el-empty>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      activeIndex: '1',
+      lowestPriceProductByCategory: null,
+      lowestPriceProductByBrand: null,
+      categoryName: '상의',
+      priceRangeByCategory: null
+    },
+    mounted() {
+      this.fetchLowestPriceProductByCategory();
+      this.fetchLowestPriceProductByBrand();
+      this.getPriceRangeByCategory();
+    },
+    methods: {
+      fetchLowestPriceProductByCategory() {
+        axios.get('/api/products/lowest-price-by-category')
+        .then(response => {
+          this.lowestPriceProductByCategory = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+          alert(error.response.data.message);
+        });
+      },
+      fetchLowestPriceProductByBrand() {
+        axios.get('/api/products/lowest-price-by-brand')
+        .then(response => {
+          this.lowestPriceProductByBrand = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+          alert(error.response.data.message);
+        });
+      },
+      getPriceRangeByCategory() {
+        axios.get(`/api/products/price-range?categoryName=${this.categoryName}`)
+        .then(response => {
+          this.priceRangeByCategory = response.data;
+        })
+        .catch(error => {
+          console.log(error);
+          this.priceRangeByCategory = null;
+          alert(error.response.data.message);
+        });
+      },
+      handleSelect(key) {
+        if (key === '2') {
+          location.href = '/admin';
+        }
+      }
+    }
+  });
+</script>
+</body>
+</html>

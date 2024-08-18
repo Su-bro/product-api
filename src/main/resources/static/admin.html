@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>관리자 페이지</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <link href="/css/styles.css" rel="stylesheet">
+  <style>
+    .el-input > input {
+      width: 80%;
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1 class="title">MUSINSA</h1>
+    <el-menu
+        :default-active="activeIndex"
+        class="el-menu-demo"
+        mode="horizontal"
+        @select="handleSelect"
+        background-color="#000"
+        text-color="#999"
+        active-text-color="#FFF">
+      <el-menu-item index="1">무진장 특가</el-menu-item>
+      <el-menu-item index="2">관리자 페이지</el-menu-item>
+    </el-menu>
+  </header>
+
+  <main>
+    <div id="mp">
+
+      <section id="product">
+        <h2>상품 관리</h2>
+        <h4>상품을 등록 수정 및 삭제할 수 있습니다.</h4>
+        <el-row :gutter="12">
+          <el-col :span="8">
+            <el-card shadow="hover">
+              <div>
+                <h3>상품 등록</h3>
+                <el-form :model="productRegisterRequest" label-width="80px">
+                  <el-form-item label="상품명">
+                    <el-input v-model="productRegisterRequest.productName"></el-input>
+                  </el-form-item>
+                  <el-form-item label="가격">
+                    <el-input-number v-model="productRegisterRequest.price" :controls="false" :min="1"></el-input-number>
+                  </el-form-item>
+                  <el-form-item label="카테고리">
+                    <el-input v-model="productRegisterRequest.categoryName"></el-input>
+                  </el-form-item>
+                  <el-form-item label="브랜드">
+                    <el-input v-model="productRegisterRequest.brandName"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button @click="registerProduct">등록</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :span="8">
+            <el-card shadow="hover">
+              <div>
+                <h3>상품 수정</h3>
+                <el-form :model="productUpdateRequest" label-width="80px">
+                  <el-form-item label="상품 ID">
+                    <el-input v-model="productUpdateRequest.productId"></el-input>
+                  </el-form-item>
+                  <el-form-item label="상품명">
+                    <el-input v-model="productUpdateRequest.productName"></el-input>
+                  </el-form-item>
+                  <el-form-item label="가격">
+                    <el-input-number v-model="productUpdateRequest.price" :controls="false" :min="1"></el-input-number>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button @click="updateProduct">수정</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :span="8">
+            <el-card shadow="hover">
+              <div>
+                <h3>상품 삭제</h3>
+                <el-form :model="productDeleteRequest" label-width="80px">
+                  <el-form-item label="상품 ID">
+                    <el-input v-model="productDeleteRequest.productId"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button @click="deleteProduct">삭제</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </section>
+
+      <hr/>
+
+      <section id="brand">
+        <h2>브랜드 관리</h2>
+        <h4>브랜드를 등록 수정 및 삭제할 수 있습니다.</h4>
+        <el-row :gutter="12">
+          <el-col :span="8">
+            <el-card shadow="hover">
+              <div>
+                <h3>브랜드 등록</h3>
+                <el-form :model="brandRegisterRequest" label-width="80px">
+                  <el-form-item label="브랜드명">
+                    <el-input v-model="brandRegisterRequest.brandName"></el-input>
+                  </el-form-item>
+                  <el-form-item label="브랜드 설명">
+                    <el-input v-model="brandRegisterRequest.brandDesc"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button @click="registerBrand">등록</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :span="8">
+            <el-card shadow="hover">
+              <div>
+                <h3>브랜드 수정</h3>
+                <el-form :model="brandUpdateRequest" label-width="80px">
+                  <el-form-item label="브랜드 ID">
+                    <el-input v-model="brandUpdateRequest.brandId"></el-input>
+                  </el-form-item>
+                  <el-form-item label="브랜드명">
+                    <el-input v-model="brandUpdateRequest.brandName"></el-input>
+                  </el-form-item>
+                  <el-form-item label="브랜드 설명">
+                    <el-input v-model="brandUpdateRequest.brandDesc"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button @click="updateBrand">수정</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col :span="8">
+            <el-card shadow="hover">
+              <div>
+                <h3>브랜드 삭제</h3>
+                <el-form :model="brandDeleteRequest" label-width="80px">
+                  <el-form-item label="브랜드 ID">
+                    <el-input v-model="brandDeleteRequest.brandId"></el-input>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button @click="deleteBrand">
+                      삭제
+                    </el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </section>
+
+    </div>
+  </main>
+</div>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      activeIndex: '2',
+      productRegisterRequest: {},
+      productUpdateRequest: {},
+      productDeleteRequest: {},
+      brandRegisterRequest: {},
+      brandUpdateRequest: {},
+      brandDeleteRequest: {},
+      initialValues: {
+        productRegisterRequest: {
+          productName: '',
+          price: 0,
+          categoryName: '',
+          brandName: ''
+        },
+        productUpdateRequest: {
+          productId: 0,
+          productName: '',
+          price: 0,
+        },
+        productDeleteRequest: {
+          productId: 0
+        },
+        brandRegisterRequest: {
+          brandName: '',
+          brandDesc: ''
+        },
+        brandUpdateRequest: {
+          brandId: 0,
+          brandName: '',
+          brandDesc: ''
+        },
+        brandDeleteRequest: {
+          brandId: 0
+        }
+      }
+    },
+    mounted() {
+      this.initProductRegisterRequest();
+      this.initProductUpdateRequest();
+      this.initProductDeleteRequest();
+      this.initBrandRegisterRequest();
+      this.initBrandUpdateRequest();
+      this.initBrandDeleteRequest();
+    },
+    methods: {
+      initProductRegisterRequest() {
+        this.productRegisterRequest = Object.assign({}, this.initialValues.productRegisterRequest);
+      },
+      initProductUpdateRequest() {
+        this.productUpdateRequest = Object.assign({}, this.initialValues.productUpdateRequest);
+      },
+      initProductDeleteRequest() {
+        this.productDeleteRequest = Object.assign({}, this.initialValues.productDeleteRequest);
+      },
+      initBrandRegisterRequest() {
+        this.brandRegisterRequest = Object.assign({}, this.initialValues.brandRegisterRequest);
+      },
+      initBrandUpdateRequest() {
+        this.brandUpdateRequest = Object.assign({}, this.initialValues.brandUpdateRequest);
+      },
+      initBrandDeleteRequest() {
+        this.brandDeleteRequest = Object.assign({}, this.initialValues.brandDeleteRequest);
+      },
+      handleSelect(key) {
+        if (key === '1') {
+          location.href = '/home';
+        }
+      },
+      registerProduct() {
+        axios.post('/api/products', this.productRegisterRequest)
+        .then((response) => {
+          this.initProductRegisterRequest();
+          alert(response.data.message);
+        })
+        .catch((error) => {
+          console.error(error);
+          alert(error.response.data.message);
+        })
+        .finally(() => {
+          this.initProductRegisterRequest();
+        });
+      },
+      updateProduct() {
+        axios.put(`/api/products/${this.productUpdateRequest.productId}`, this.productUpdateRequest)
+        .then((response) => {
+          this.initProductUpdateRequest();
+          alert(response.data.message);
+        })
+        .catch((error) => {
+          console.error(error);
+          alert(error.response.data.message);
+        })
+      },
+      deleteProduct() {
+        axios.delete(`/api/products/${this.productDeleteRequest.productId}`)
+        .then((response) => {
+          this.initProductDeleteRequest();
+          alert(response.data.message);
+        })
+        .catch((error) => {
+          console.error(error);
+          alert(error.response.data.message);
+        });
+      },
+      registerBrand() {
+        axios.post('/api/brands', this.brandRegisterRequest)
+        .then((response) => {
+          this.initBrandRegisterRequest();
+          alert(response.data.message);
+        })
+        .catch((error) => {
+          console.error(error);
+          alert(error.response.data.message);
+        })
+        .finally(() => {
+          this.initBrandRegisterRequest();
+        });
+      },
+      updateBrand() {
+        axios.put('/api/brands', this.brandUpdateRequest)
+        .then((response) => {
+          this.initBrandUpdateRequest();
+          alert(response.data.message);
+        })
+        .catch((error) => {
+          console.error(error);
+          alert(error.response.data.message);
+        })
+      },
+      deleteBrand() {
+        axios.delete(`/api/brands/${this.brandDeleteRequest.brandId}`)
+        .then((response) => {
+          this.initBrandDeleteRequest();
+          alert(response.data.message);
+        })
+        .catch((error) => {
+          console.error(error);
+          alert(error.response.data.message);
+        });
+      }
+    },
+  });
+</script>
+</body>
